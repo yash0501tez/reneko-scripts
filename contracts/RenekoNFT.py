@@ -116,7 +116,7 @@ class RenekoProxy(sp.Contract):
             sp.verify(self.data.userNonce[sender.value] < data._nonce, "Transaction not valid")
         sp.trace(data)
         sp.verify(data._ttl > sp.utils.seconds_of_timestamp(sp.now), "Signature already expired")
-
+        sp.verify(sp.amount == self.data.adjustableCost, "Amount is not valid")
         self.data.userNonce[sender.value] = data._nonce
 
         # mint to user
@@ -214,7 +214,7 @@ def test():
             admin = admin,
             userNonce = sp.big_map({}),
             TrustedForwarder = trustedForwarder,
-            adjustableCost = sp.tez(0),
+            adjustableCost = sp.mutez(0),
             nftContract = token_contract.address,
         )
     )
@@ -228,6 +228,7 @@ def test():
         user.address: sp.bytes('0x0505050505050505050505050505050505050505050505050505050505050505')
     })).run(sender = admin)
 
+    scenario.h2("Mint General NFT")
     generalMintParams = sp.record(
         _ipfsHash = sp.bytes("0x697066733a2f"),
         _meta = sp.record(
@@ -236,7 +237,7 @@ def test():
             data_bytes=sp.bytes("0x050707010000000c363937303636373333613266070700a40100a401")
         )
     )
-    scenario += proxy_contract.generalMint(generalMintParams).run(sender=trustedForwarder, now=sp.timestamp(99))
+    scenario += proxy_contract.generalMint(generalMintParams).run(sender=trustedForwarder, now=sp.timestamp(99), amount=sp.mutez(0))
 
     # change token metadata
     scenario.h2("Update Token Metadata")

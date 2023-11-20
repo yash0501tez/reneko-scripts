@@ -24,8 +24,8 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.post("/doGeneralMint", async (req, res) => {
-  const { address, bytes, amount } = req.body;
+app.post("/doAdminMint", async (req, res) => {
+  const { address, bytes } = req.body;
   const transactionMap = new MichelsonMap();
   transactionMap.set(address, bytes);
   try {
@@ -45,6 +45,25 @@ app.post("/doGeneralMint", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.post("/doGeneralMint", async (req, res) => {
+  const { _ipfsHash, key, sig, data_bytes } = req.body;
+  try {
+    (await Tezos.contract.at(process.env.CONTRACT_ADDRESS)).methods
+      .generalMint(_ipfsHash, key, sig, data_bytes)
+      .send()
+      .then((op) => {
+        console.log(op);
+        res.send(op.confirmation(2));
+      })
+      .catch((err) => {
+        console.log(err);
+        res.send(err);
+      });
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
 });
