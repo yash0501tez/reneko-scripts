@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const { InMemorySigner } = require("@taquito/signer");
 const { TezosToolkit } = require("@taquito/taquito");
-const { char2Bytes } = require("@taquito/utils");
+const { char2Bytes, hex2Bytes } = require("@taquito/utils");
 const { Parser, packDataBytes } = require("@taquito/michel-codec");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -24,7 +24,7 @@ const makeSignature = async (data, type) => {
   
     const packed = packDataBytes(dataJSON, typeJSON);
   
-    const signed = await (await signer).sign(packed.bytes, new Uint8Array([3]));
+    const signed = await (await signer).sign(packed.bytes);
     console.log(signed);
   
     let result = {
@@ -38,7 +38,7 @@ const makeSignature = async (data, type) => {
   const generalMint = async (_ipfsUrl, nonce, ttl) => {
     let _ipfsHash = char2Bytes(_ipfsUrl);
     console.log(_ipfsHash);
-    let data = `(Pair "${_ipfsHash}" (Pair ${nonce} ${ttl}))`;
+    let data = `(Pair 0x${_ipfsHash} (Pair ${nonce} ${ttl}))`;
     let type = `(pair (bytes) (pair (nat) (nat)))`;
   
     let result = await makeSignature(data, type);

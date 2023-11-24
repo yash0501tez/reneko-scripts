@@ -10,7 +10,7 @@
   "author": "Yash Garg",
   "license": "ISC",
   "dependencies": {
-    "@taquito/michel-codec": "^17.3.2",
+    "@taquito/michel-codec": "^17.4.0",
     "@taquito/signer": "^17.3.2",
     "@taquito/taquito": "^17.3.2",
     "axios": "^1.6.0",

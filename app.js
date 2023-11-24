@@ -12,7 +12,8 @@ InMemorySigner.fromSecretKey(process.env.PVT_KEY)
     Tezos.setProvider({
       signer: signer,
     });
-    return Tezos.signer.publicKeyHash();
+    // console.log(Tezos.signer.publicKey())
+    return Tezos.signer.publicKey();
   })
   .then((pkh) => console.log(`Initialized account ${pkh}`))
   .catch((error) => console.log(`Error: ${error} `));
