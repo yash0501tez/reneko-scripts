@@ -50,7 +50,7 @@ app.post("/doGeneralMint", async (req, res) => {
   const { _ipfsHash, key, sig, data_bytes } = req.body;
   try {
     (await Tezos.contract.at(process.env.CONTRACT_ADDRESS)).methods
-      .generalMint(_ipfsHash, key, sig, data_bytes)
+      .generalMint(_ipfsHash, data_bytes, key, sig)
       .send()
       .then((op) => {
         console.log(op);
@@ -61,6 +61,7 @@ app.post("/doGeneralMint", async (req, res) => {
         res.send(err);
       });
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
 });
